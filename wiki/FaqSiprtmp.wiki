@@ -1,0 +1,6 @@
+#summary FAQ on SIP-RTMP gateway.
+#labels FAQ,siprtmp,Featured
+
+= Frequently asked questions on SIP-RTMP gateway (siprtmp) =
+
+=== Does it work with Asterisk? ===
