@@ -3,4 +3,22 @@
 
 = Frequently asked questions on SIP-RTMP gateway (siprtmp) =
 
+=== My gateway does not work. What do I do? ===
+
+Please start your gateway with "-d" command line option, so that it prints detailed trace information including the SIP messages. Then capture the trace, e.g., using Unix "script" command. Finally, send your error report and the trace to [mailto:kundan10@gmail.com Kundan Singh].
+
+=== When dialing out from web client, should I dial phone number or SIP address? ===
+
+You must dial a SIP address of the form "user@domain" or "user@ip-address". If you have PSTN dialing available via your gateway, then use the "phone-number@ip-address-of-pstn-gateway", e.g., "7140@192.1.2.3" instead of just "7140". 
+
+=== When I call from X-lite it responds with "488 Incompatible SDP". Why? ===
+
+By default X-lite has only PCMU and PCMA codec enabled. You will need to go to audio options of X-lite and enable the Speex/16000 (wideband codec).
+
 === Does it work with Asterisk? ===
+
+Depends on what codec Asterisk supports. The siprtmp gateway supports speex/16000 (audio) and x-flv/90000 (video). As mentioned in siprtmp.py documentation, the video codec is proprietary and will work only between two videoPhone web client. However, audio codec is open standard, implemented by Flash Player and other SIP user agents as well. For voice-only call, unless your other party supports wideband speex/16000 codec, your call will not go through.
+
+=== Does it work with other SIP servers or clients? ===
+
+Depends on what the other SIP client or server is. If there are interoperability bugs, we will be happy to resolve those.
