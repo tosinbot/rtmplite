@@ -1,7 +1,5 @@
-#summary FAQ on SIP-RTMP gateway.
 #labels FAQ,siprtmp,Featured
-
-= Frequently asked questions on SIP-RTMP gateway (siprtmp) =
+= Frequently asked questions (SIP-RTMP gateway) =
 
 === My gateway does not work. What do I do? ===
 
