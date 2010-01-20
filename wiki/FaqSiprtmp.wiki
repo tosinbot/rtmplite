@@ -5,6 +5,10 @@
 
 Please start your gateway with "-d" command line option, so that it prints detailed trace information including the SIP messages. Then capture the trace, e.g., using Unix "script" command. Finally, send your error report and the trace to [mailto:kundan10@gmail.com support].
 
+=== Does it work with other SIP servers or clients? ===
+
+Depends on what the other SIP client or server is. If there are interoperability bugs, we will be happy to resolve those.
+
 === When dialing out from web client, should I dial phone number or SIP address? ===
 
 You must dial a SIP address of the form "user@domain" or "user@ip-address". If you have PSTN dialing available via your gateway, then use the "phone-number@ip-address-of-pstn-gateway", e.g., "7140@192.1.2.3" instead of just "7140". 
@@ -15,8 +19,30 @@ By default X-lite has only PCMU and PCMA codec enabled. You will need to go to a
 
 === Does it work with Asterisk? ===
 
-Depends on what codec Asterisk supports. The siprtmp gateway supports speex/16000 (audio) and x-flv/90000 (video). From what I understand, the Asterisk codec does not support speex. You can compile Asterisk to support speex, but it will be speex/8000 and not speex/16000. For voice-only call, unless your other party supports wideband speex/16000 codec, your call will not go through.
+Depends on what codec Asterisk supports. The siprtmp gateway supports speex/16000 (audio) and x-flv/90000 (video). From what I understand, the Asterisk codec does not support speex. You can compile Asterisk to support speex, but it will be speex/8000 and not speex/16000. For voice-only call, unless your other party supports wideband speex/16000 codec, your call will not go through. Please see the next question on how to make siprtmp work with 8000 Hz sampling.
 
-=== Does it work with other SIP servers or clients? ===
+=== How can use Speex/8000 instead of Speex/16000 ===
 
-Depends on what the other SIP client or server is. If there are interoperability bugs, we will be happy to resolve those.
+Flash Player by default uses 16000 Hz sampling for Speex. There are three changes in the code to make the gateway work at 8000 Hz sampling rate. Until we add a configurable parameter, please apply the following changes.
+
+  * In videoPhone/src/view/VVideo.mxml file, in startPublish() method, add a line to change microphone rate after codec is set to Speex. You will need to re-compile the Flash application after this change.
+{{{
+                                       var mic:Microphone = Microphone.getMicrophone(0);
+                                       mic['codec'] = "Speex";
++                                      mic.rate = 8;
+                                       mic['framesPerPacket'] = 1;
+}}}
+
+  * In siprtmp.py, change the audio codec's sampling rate from 16000 to 8000.
+{{{
+- audio_fmt, video_fmt = format(pt=-1, name='speex', rate=16000), format(pt=-1, name='x-flv', rate=90000)
++ audio_fmt, video_fmt = format(pt=-1, name='speex', rate=8000), format(pt=-1, name='x-flv', rate=90000)
+}}}
+
+  * In siprtmp.py, change the samples count from 320 to 160.
+{{{
+               if self.session and self.session.media:
+-                 self._ts += 320 # assume 20 ms data at 16000 Hz
++                 self._ts += 160 # assume 20 ms data at 8000 Hz
+                  self.session.media.send(payload=message.data[1:], ts=self._ts, marker=False, fmt=audio_fmt)
+}}}
