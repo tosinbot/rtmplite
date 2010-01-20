@@ -15,7 +15,7 @@ By default X-lite has only PCMU and PCMA codec enabled. You will need to go to a
 
 === Does it work with Asterisk? ===
 
-Depends on what codec Asterisk supports. The siprtmp gateway supports speex/16000 (audio) and x-flv/90000 (video). As mentioned in siprtmp.py documentation, the video codec is proprietary and will work only between two videoPhone web client. However, audio codec is open standard, implemented by Flash Player and other SIP user agents as well. For voice-only call, unless your other party supports wideband speex/16000 codec, your call will not go through.
+Depends on what codec Asterisk supports. The siprtmp gateway supports speex/16000 (audio) and x-flv/90000 (video). From what I understand, the Asterisk codec does not support speex. You can compile Asterisk to support speex, but it will be speex/8000 and not speex/16000. For voice-only call, unless your other party supports wideband speex/16000 codec, your call will not go through.
 
 === Does it work with other SIP servers or clients? ===
 
