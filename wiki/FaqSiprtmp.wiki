@@ -25,14 +25,15 @@ Depends on what codec Asterisk supports. The siprtmp gateway supports speex/1600
 
 Flash Player by default uses 16000 Hz sampling for Speex. There are three changes in the code to make the gateway work at 8000 Hz sampling rate. Until we add a configurable parameter, please apply the following changes.
 
-  * In videoPhone/src/view/VVideo.mxml file, in startPublish() method, add a line to change microphone rate after codec is set to Speex. You will need to re-compile the Flash application after this change.
+  * In videoPhone/src/view/VVideo.mxml file, in startPublish() method, add a line to change microphone rate after codec is set to Speex. You will need to re-compile the Flash application after this change. See next bullet if you don't have Flex builder to re-compile the application.
 {{{
                                        var mic:Microphone = Microphone.getMicrophone(0);
                                        mic['codec'] = "Speex";
 +                                      mic.rate = 8;
                                        mic['framesPerPacket'] = 1;
 }}}
-If you don't have Flex Builder, then you can use the [http://rtmplite.googlecode.com/svn/trunk/videoPhone/bin-release/VideoPhone8.swf SWF] I have compiled with this change. In that case you will need to change videoPhone/bin-release/VideoPhone.html as follows:
+
+  * If you don't have Flex Builder, then you can use the [http://rtmplite.googlecode.com/svn/trunk/videoPhone/bin-release/VideoPhone8.swf SWF] I have compiled with this change. In that case you will need to change videoPhone/bin-release/VideoPhone.html as follows:
 {{{
         AC_FL_RunContent(
 -                       "src", "VideoPhone",
