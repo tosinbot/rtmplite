@@ -32,6 +32,13 @@ Flash Player by default uses 16000 Hz sampling for Speex. There are three change
 +                                      mic.rate = 8;
                                        mic['framesPerPacket'] = 1;
 }}}
+If you don't have Flex Builder, then you can use the [http://rtmplite.googlecode.com/svn/trunk/videoPhone/bin-release/VideoPhone8.swf SWF] I have compiled with this change. In that case you will need to change videoPhone/bin-release/VideoPhone.html as follows:
+{{{
+        AC_FL_RunContent(
+-                       "src", "VideoPhone",
++                       "src", "VideoPhone8",
+                        "width", "214",
+}}}
 
   * In siprtmp.py, change the audio codec's sampling rate from 16000 to 8000.
 {{{
