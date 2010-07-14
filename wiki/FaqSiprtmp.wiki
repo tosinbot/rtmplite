@@ -3,7 +3,7 @@
 
 === My gateway does not work. What do I do? ===
 
-Please start your gateway with "-d" command line option, so that it prints detailed trace information including the SIP messages. Then capture the trace, e.g., using Unix "script" command. Finally, send your error report and the trace to [mailto:kundan10@gmail.com support].
+Please start your gateway with "-d" command line option, so that it prints detailed trace information including the SIP messages. Then capture the trace, e.g., using Unix "script" command. Finally, send your error report and the trace to [mailto:myprojectguide@googlegroups.com support].
 
 === Does it work with other SIP servers or clients? ===
 
