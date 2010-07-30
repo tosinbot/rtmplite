@@ -19,38 +19,8 @@ By default X-lite has only PCMU and PCMA codec enabled. You will need to go to a
 
 === Does it work with Asterisk? ===
 
-Depends on what codec Asterisk supports. The siprtmp gateway supports speex/16000 (audio) and x-flv/90000 (video). From what I understand, the Asterisk codec does not support speex. You can compile Asterisk to support speex, but it will be speex/8000 and not speex/16000. For voice-only call, unless your other party supports wideband speex/16000 codec, your call will not go through. Please see the next question on how to make siprtmp work with 8000 Hz sampling.
+Depends on what codec Asterisk supports. The siprtmp gateway supports speex/16000 or 8000 (audio) and x-flv/90000 (video). From what I understand, the Asterisk codec does not support speex. You can compile Asterisk to support speex using speex/8000 and not speex/16000. The VideoPhone and siprtmp gateway now have support to dynamically switch from default 16000 (wideband) to 8000 (narrowband). Please see the next question on how to make siprtmp work with 8000 Hz sampling.
 
-=== How can use Speex/8000 instead of Speex/16000 ===
+=== How can use Speex/8000 (narrowband) instead of Speex/16000 (wideband) ===
 
-Flash Player by default uses 16000 Hz sampling for Speex. There are three changes in the code to make the gateway work at 8000 Hz sampling rate. Until we add a configurable parameter, please apply the following changes.
-
-  * In videoPhone/src/view/VVideo.mxml file, in startPublish() method, add a line to change microphone rate after codec is set to Speex. You will need to re-compile the Flash application after this change. See next bullet if you don't have Flex builder to re-compile the application.
-{{{
-                                       var mic:Microphone = Microphone.getMicrophone(0);
-                                       mic['codec'] = "Speex";
-+                                      mic.rate = 8;
-                                       mic['framesPerPacket'] = 1;
-}}}
-
-  * If you don't have Flex Builder, then you can use the [http://rtmplite.googlecode.com/svn/trunk/videoPhone/bin-release/VideoPhone8.swf SWF] I have compiled with this change. In that case you will need to change videoPhone/bin-release/VideoPhone.html as follows:
-{{{
-        AC_FL_RunContent(
--                       "src", "VideoPhone",
-+                       "src", "VideoPhone8",
-                        "width", "214",
-}}}
-
-  * In siprtmp.py, change the audio codec's sampling rate from 16000 to 8000.
-{{{
-- audio_fmt, video_fmt = format(pt=-1, name='speex', rate=16000), format(pt=-1, name='x-flv', rate=90000)
-+ audio_fmt, video_fmt = format(pt=-1, name='speex', rate=8000), format(pt=-1, name='x-flv', rate=90000)
-}}}
-
-  * In siprtmp.py, change the samples count from 320 to 160.
-{{{
-               if self.session and self.session.media:
--                 self._ts += 320 # assume 20 ms data at 16000 Hz
-+                 self._ts += 160 # assume 20 ms data at 8000 Hz
-                  self.session.media.send(payload=message.data[1:], ts=self._ts, marker=False, fmt=audio_fmt)
-}}}
+Flash Player by default uses 16000 Hz sampling for Speex. The new version of siprtmp and rtmplite (version 6.0 and above) support both 8000 and 16000 Hz sampling for Speex. In the VideoPhone Flash application, you can select the narrowband (8000) Speex in the right click menu. The right click menu allows you to switch between narrowband and wideband. The selection must be done before registration, but is saved along with you other registration data if you select "Remember me" option. The selection is supplied to the siprtmp.py gateway in the NetConnection.connect method as the rate attribute, and is used for audio format sampling rate.
