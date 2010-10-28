@@ -24,3 +24,41 @@ Depends on what codec Asterisk supports. The siprtmp gateway supports speex/1600
 === How can I use Speex/8000 (narrowband) instead of Speex/16000 (wideband) ===
 
 Flash Player by default uses 16000 Hz sampling for Speex. The new version of siprtmp and rtmplite (version 6.0 and above) support both 8000 and 16000 Hz sampling for Speex. In the VideoPhone Flash application, you can select the narrowband (8000) Speex in the right click menu. The right click menu allows you to switch between narrowband and wideband. The selection must be done before registration, but is saved along with you other registration data if you select "Remember me" option. The selection is supplied to the siprtmp.py gateway in the NetConnection.connect method as the rate attribute, and is used for audio format sampling rate.
+
+=== How to extend siprtmp to support DTMF touch tone ===
+
+Using RFC2833 is preferred way to send DTMF touch tones. You can use the rfc2833.py and rfc2198.py modules of p2p-sip/39peers project as mentioned in http://39peers.net/download/doc/report.html (search for "Touch-tone interface" towards the end). Since siprtmp.py already has the RTP session, you can use the existing RTP session to
+send out the digits. For example if you sending digits "1234" first create the RFC 2833 payloads as:
+{{{
+dtmfs = rfc2833.createDTMFs("1234")
+}}}
+This will return a list of DTMF objects. Then use RFC 2198 to create redundant payloads. Suppose your timestamp is 10000, interval of 1600 between digits and negotiated payload-type is 97, then as follows:
+{{{
+t0, td, pt = 10000, 1600, 97
+input = []
+for dtmf in dtmfs:
+    dtmf = repr(dtmf)    # convert DTMF to str
+    input.append((pt, t0, dtmf))
+    t0 += td
+payload = rfc2198.createRedundant(input)
+}}}
+You can now use the payload as the RTP's payload to send out in the existing RTP session. See siprtmp.py's rtmpdata method. Something like the following should work, where fmt should be set to your audio format for touch-tone.
+{{{
+self.session.media.send(payload=payload, ts=10000, marker=False, fmt=...)
+}}}
+We will try to add this feature to siprtmp.py soon, in the next version.
+
+On the other hand, if you do want to use the SIP INFO method, you can use the following example. In siprtmp.py, the Context's self.session represents the voip.Session object of the existing session. Session has a ua object representing the Dialog which has createRequest and sendRequest methods. You can use them as follows.
+{{{
+ua = self.session.ua
+m = ua.createRequest("INFO")
+m['Content-Type'] = rfc3261.Header('application/dtmf-relay', 'Content-Type')
+m.body = 'Signal=5\nDuration=160'
+ua.sendRequest(m)
+}}}
+This will send out the SIP INFO request in the current dialog/session with Content-Type of "application/dtmf-relay" and content of
+{{{
+Signal=5
+Duration=160
+}}}
+The Content-Length will automatically be added correctly to the request.
