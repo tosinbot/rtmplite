@@ -21,11 +21,15 @@ By default X-lite has only PCMU and PCMA codec enabled. You will need to go to a
 
 Depends on what codec Asterisk supports. The siprtmp gateway supports speex/16000 or 8000 (audio) and x-flv/90000 (video). From what I understand, the Asterisk codec does not support speex. You can compile Asterisk to support speex using speex/8000 and not speex/16000. The VideoPhone and siprtmp gateway now have support to dynamically switch from default 16000 (wideband) to 8000 (narrowband). Please see the next question on how to make siprtmp work with 8000 Hz sampling.
 
-=== How can I use Speex/8000 (narrowband) instead of Speex/16000 (wideband) ===
+=== How can I use Speex/8000 (narrowband) instead of Speex/16000 (wideband)? ===
 
 Flash Player by default uses 16000 Hz sampling for Speex. The new version of siprtmp and rtmplite (version 6.0 and above) support both 8000 and 16000 Hz sampling for Speex. In the VideoPhone Flash application, you can select the narrowband (8000) Speex in the right click menu. The right click menu allows you to switch between narrowband and wideband. The selection must be done before registration, but is saved along with you other registration data if you select "Remember me" option. The selection is supplied to the siprtmp.py gateway in the NetConnection.connect method as the rate attribute, and is used for audio format sampling rate.
 
-=== How to extend siprtmp to support DTMF touch tone ===
+=== How to send DTMF touch tone? ===
+
+I have added a patch sent by another person to both VideoPhone and siprtmp.py. During a call, you can click on bottom-left corner of VideoPhone Flash application to show a hidden dial-pad. The dial-pad will allow you to enter digits during a call. It invokes "sendDTMF" method on siprtmp.py, which in turn uses the rfc2833.py module to send out the digits if the remote end had sent "telephone-event" in SDP during session initiation. 
+
+The following text describes how to use RFC 2198 along with RFC 2833 to send digits, and how to use SIP INFO method to send digits:
 
 Using RFC2833 is preferred way to send DTMF touch tones. You can use the rfc2833.py and rfc2198.py modules of p2p-sip/39peers project as mentioned in http://39peers.net/download/doc/report.html (search for "Touch-tone interface" towards the end). Since siprtmp.py already has the RTP session, you can use the existing RTP session to
 send out the digits. For example if you sending digits "1234" first create the RFC 2833 payloads as:
