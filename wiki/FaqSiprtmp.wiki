@@ -1,5 +1,5 @@
 #labels FAQ,siprtmp
-= Frequently asked questions (SIP-RTMP gateway) =
+= Frequently Asked Questions (SIP-RTMP gateway) =
 
 === My gateway does not work. What do I do? ===
 
