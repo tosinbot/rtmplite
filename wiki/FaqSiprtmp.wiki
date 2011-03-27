@@ -25,7 +25,7 @@ Once registered, use the SIP URL of target to make call, e.g., yourname@iptel.or
 
 === How do I build my own Flash application to connect to the gateway? ===
 
-The necessary API is documented in the [siprtmp.py http://code.google.com/p/rtmplite/source/browse/trunk/siprtmp.py] source code itself. In particular, you use NetConnection's connect and supply the appropriate parameters.
+The necessary API is documented in the http://code.google.com/p/rtmplite/source/browse/trunk/siprtmp.py source code itself. In particular, you use NetConnection's connect and supply the appropriate parameters.
 
 === When dialing out from web client, should I dial phone number or SIP address? ===
 
