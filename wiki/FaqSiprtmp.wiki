@@ -84,3 +84,36 @@ Signal=5
 Duration=160
 }}}
 The Content-Length will automatically be added correctly to the request.
+
+=== How to send SIP MESSAGE for instant message? ===
+
+You can send SIP MESSAGE in an established call in siprtmp.py using Context's self.session (which is voip.Session object) as follows. In class Context add the following:
+{{{
+    def rtmp_sendMessage(self, message):
+        try:  yield self.session.send(message)
+        except: pass
+}}}
+The Session class uses Content-Type of text/plain to send a SIP MESSAGE with given message as content. 
+Now you can call "sendMessage" with argument "message" from your Flash application using NetConnection's call method.
+
+To receive incoming SIP MESSAGE, in Context's _sessionhandler method, similar to the check for "close" add the following check.
+{{{
+                if cmd == 'send': self.client.call('receivedMessage', arg)
+}}}
+Then add a public function of receivedMessage(text:String) in your ActionScript class for NetConnection.client. If you are using Flash-VideoIO, define receivedMessage in your HTML/Javascript page that embeds VideoIO.swf.
+
+If you want to send a out-of-dialog paging-mode SIP MESSAGE, you need to use sendIM of user object itself.
+{{{
+    def rtmp_sendPagingMessage(self, dest, message):
+        try: result, reason = yield self.user.sendIM(dest, message)
+        except: pass
+}}}
+On incoming side, you will need to modify Context's _incominghandler parallel to close as follows:
+{{{
+                elif cmd == 'send': # incoming paging SIP MESSAGE
+                    source, body = arg # arg is actually a tuple
+                    self.client.call("receivedPagingMessage", str(source), str(body))
+}}}
+And define public function receivedPagingMessage(src:String, body:String) in your ActionScript.
+
+We will try to add instant message send/receive in the code, if there are huge demand for this. Please send a request on the support group to demand this feature.
