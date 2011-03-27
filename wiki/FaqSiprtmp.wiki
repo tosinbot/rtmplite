@@ -96,7 +96,7 @@ You can send SIP MESSAGE in an established call in siprtmp.py using Context's se
 The Session class uses Content-Type of text/plain to send a SIP MESSAGE with given message as content. 
 Now you can call "sendMessage" with argument "message" from your Flash application using NetConnection's call method.
 
-To receive incoming SIP MESSAGE, in Context's _sessionhandler method, similar to the check for "close" add the following check.
+To receive incoming SIP MESSAGE, in Context's {{{_sessionhandler}}} method, similar to the check for "close" add the following check.
 {{{
                 if cmd == 'send': self.client.call('receivedMessage', arg)
 }}}
@@ -108,7 +108,7 @@ If you want to send a out-of-dialog paging-mode SIP MESSAGE, you need to use sen
         try: result, reason = yield self.user.sendIM(dest, message)
         except: pass
 }}}
-On incoming side, you will need to modify Context's _incominghandler parallel to close as follows:
+On incoming side, you will need to modify Context's {{{_incominghandler}}} parallel to close as follows:
 {{{
                 elif cmd == 'send': # incoming paging SIP MESSAGE
                     source, body = arg # arg is actually a tuple
