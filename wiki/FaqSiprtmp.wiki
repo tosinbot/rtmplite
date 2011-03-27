@@ -9,6 +9,24 @@ Please start your gateway with "-d" command line option, so that it prints detai
 
 Depends on what the other SIP client or server is. If there are interoperability bugs, we will be happy to resolve those.
 
+=== Can I directly connect from Flash client to SIP server? ===
+
+No. You need to go through the siprtmp.py (SIP-RTMP gateway). The path is Flash client connect to SIP-RTMP gateway, which in turn registers and communicates with the SIP server. But you can communicate with any existing SIP server, as long as there are no interoperability bugs, between the gateway and the SIP server.
+
+=== How do I test a SIP registration and call? ===
+
+Using the builtin videoPhone.swf applictaion (which is also hosted at http://myprojectguide.org/p/siprtmp). Support you want to register with gateway running on gateway.host.com and SIP server of iptel.org with username myname, password mypass, use the following input text when prompted to register.
+Gateway URL: rtmp://gateway.host.com/sip
+SIP URL: myname@iptel.org
+Auth username: myname
+Auth password: mypass
+Display name: My Name
+Once registered, use the SIP URL of target to make call, e.g., yourname@iptel.org
+
+=== How do I build my own Flash application to connect to the gateway? ===
+
+The necessary API is documented in the [siprtmp.py http://code.google.com/p/rtmplite/source/browse/trunk/siprtmp.py] source code itself. In particular, you use NetConnection's connect and supply the appropriate parameters.
+
 === When dialing out from web client, should I dial phone number or SIP address? ===
 
 You must dial a SIP address of the form "user@domain" or "user@ip-address". If you have PSTN dialing available via your gateway, then use the "phone-number@ip-address-of-pstn-gateway", e.g., "7140@192.1.2.3" instead of just "7140". 
