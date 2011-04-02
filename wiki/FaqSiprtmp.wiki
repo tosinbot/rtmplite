@@ -131,3 +131,21 @@ On incoming side, you will need to modify Context's {{{_incominghandler}}} paral
 And define public function receivedPagingMessage(src:String, body:String) in your ActionScript.
 
 We will try to add instant message send/receive in the code, if there are huge demand for this. Please send a request on the support group to demand this feature.
+
+=== How to use RTMPS on the server? ===
+
+(contributed by Dmitry) There are no changes needed in rtmplite source code. You need to 
+(1) install [http://www.stunnel.org stunnel]
+(2) add the following in `stunnel.conf`
+{{{
+[rtmps]
+accept = 443
+connect = 1935
+}}}
+(3) In `NetConnection` object in your Flash application, set the `proxyType` to "best" before doing a connect
+{{{
+ nc.proxyType = "best"
+}}}
+(4) In `NetConnection` object's `connect()` method use the URL with "rtmps" scheme, e.g., "rtmps://your-server/sip".
+
+If you want use non-443 port, for example 8443, change `stunnel.conf` and use port number in your URL, e.g., "rtmps://your-server:8443/sip".
