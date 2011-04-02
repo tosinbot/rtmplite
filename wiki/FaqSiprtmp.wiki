@@ -26,9 +26,9 @@ Once registered, use the SIP URL of target to make call, e.g., yourname@iptel.or
 === Can I run the gateway on Amazon EC2 cloud? ===
 
 Yes, but you will need to use the latest sources of rtmplite and p2p-sip projects from SVN. Both rtmplite (r61) and p2p-sip (r29) were modified to allow specifying an IP address to advertise in SIP/SDP, which can be different than the local IP address. This is useful for EC2, because the node gets local IP address in range 10.x.x.x but can be reached from public IP address which is different. For example, if your EC2 node's private IP is 10.245.221.44 and public IP is 50.17.154.98, then you should start SIP-RTMP gateway with -e option as follows.
-
+{{{
 $ python siprtmp.py -d -e 50.17.154.98
-
+}}}
 You can know your public IP from the public DNS name of your node, e.g., host name of ec2-50-17-154-98.compute-1.amazonaws.com means IP is 50.17.154.98. I have tested siprtmp.py on EC2 using a call between VideoPhone.swf example and X-Lite via the SIP proxy running on iptel.org.
 
 There may be issues if you run your own SIP proxy server on another EC2 node since siprtmp.py and your SIP server should now connect using private IP instead of public IP. Please let us know if you have problems.
