@@ -59,7 +59,7 @@ Flash Player by default uses 16000 Hz sampling for Speex. The new version of sip
 
 === How to send DTMF touch tone? ===
 
-I have added a patch sent by another person to both VideoPhone and siprtmp.py. During a call, you can click on bottom-left corner of VideoPhone Flash application to show a hidden dial-pad. The dial-pad will allow you to enter digits during a call. It invokes "sendDTMF" method on siprtmp.py, which in turn uses the rfc2833.py module to send out the digits if the remote end had sent "telephone-event" in SDP during session initiation. Please use the latest code from SVN/r34 or later to get this patch.
+I have added a patch sent by another person to both VideoPhone and siprtmp.py. During a call, you can click on the button in the top-left corner of VideoPhone Flash application to show a dial-pad. The dial-pad will allow you to enter digits during a call. It invokes "sendDTMF" method on siprtmp.py, which in turn uses the rfc2833.py module to send out the digits if the remote end had sent "telephone-event" in SDP during session initiation. Please use the latest code from SVN/r34 or later to get this patch.
 
 The following text describes how to use RFC 2198 along with RFC 2833 to send digits, and how to use SIP INFO method to send digits:
 
