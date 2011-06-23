@@ -1,0 +1,13 @@
+#summary How to do transcoding between Speex and PCMU/PCMA.
+
+= Introduction =
+
+This page describes how to do transcoding between Flash Player's Speex and SIP side's PCMU/PCMA voice codec in the siprtmp.py gateway.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
