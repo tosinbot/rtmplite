@@ -35,6 +35,16 @@ You can know your public IP from the public DNS name of your node, e.g., host na
 
 There may be issues if you run your own SIP proxy server on another EC2 node since siprtmp.py and your SIP server should now connect using private IP instead of public IP. Please let us know if you have problems.
 
+=== Why does it pick 127.0.0.1 as the listening IP? ===
+
+When the Flash side connects to siprtmp, it prints the listening/advertised IP of the corresponding SIP User Agent. If you see local IP address here, then you won't be able to communicate with SIP phones/servers on other machines. The most common reason for this is that your 'hostname' points to local IP in your /etc/hosts file. The siprtmp code uses gethostbyname(gethostname()) to find the listening/advertised IP. 
+
+To work around this, you can supply the -l option with your correct IP address, e.g.,
+{{{
+$ python siprtmp.py -d -l 192.168.0.3
+}}}
+By default if -l (listening IP) is supplied, but -e (advertised IP) is not, then it uses the same -l value for advertised IP.
+
 === Can I run the gateway or server on Google App Engine? ===
 
 No. The existing API of Google App Engine does not support long lived general purpose TCP connection that can be used for RTMP. The channel API uses another protocol, XMPP, and cannot be used as long-lived connection to your GAE application. A long-lived TCP connection is needed for RTMP media server implementation.
@@ -50,6 +60,10 @@ You must dial a SIP address of the form "user@domain" or "user@ip-address". If y
 === When I call from X-lite it responds with "488 Incompatible SDP". Why? ===
 
 By default X-lite has only PCMU and PCMA codec enabled. You will need to go to audio options of X-lite and enable the Speex/16000 (wideband codec).
+
+=== Does it work with Ekiga? ===
+
+Yes. Please make sure you use the latest p2p-sip sources from SVN, specially r39 or later, which works around the lack of RTP padding support in Ekiga.
 
 === Does it work with Asterisk? ===
 
