@@ -71,6 +71,11 @@ Depends on what codec Asterisk supports. The siprtmp gateway supports speex/1600
 
 In short it will not work with Asterisk unless Asterisk supports speex/16000.
 
+*Update:* We found a bug in Asterisk 1.6.2 (may also be on other 1.6.x) that it sends incorrect Content-Length in 200 OK response (answer) to INVITE if the the INVITE request (offer) has video in SDP, but unsupported by target. To work around this you can comment out the following line in p2p-sip's [http://code.google.com/p/p2p-sip/source/browse/trunk/src/std/rfc3261.py src/std/rfc3261.py]. (on or near line 217)
+{{{
+if self.body != None and bodyLen != len(body): ...
+}}}
+
 === How can I use Speex/8000 (narrowband) instead of Speex/16000 (wideband)? ===
 
 ~~Flash Player by default uses 16000 Hz sampling for Speex. The new version of siprtmp and rtmplite (version 6.0 and above) support both 8000 and 16000 Hz sampling for Speex. In the VideoPhone Flash application, you can select the narrowband (8000) Speex in the right click menu. The right click menu allows you to switch between narrowband and wideband. The selection must be done before registration, but is saved along with you other registration data if you select "Remember me" option. The selection is supplied to the siprtmp.py gateway in the NetConnection.connect method as the rate attribute, and is used for audio format sampling rate.~~
