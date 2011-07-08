@@ -73,7 +73,7 @@ In short it will not work with Asterisk unless Asterisk supports speex/16000.
 
 *Update:* We found a bug in Asterisk 1.6.2 (may also be on other 1.6.x) that it sends incorrect Content-Length in 200 OK response (answer) to INVITE if the the INVITE request (offer) has video in SDP, but unsupported by target. To work around this you can comment out the following line in p2p-sip's [http://code.google.com/p/p2p-sip/source/browse/trunk/src/std/rfc3261.py src/std/rfc3261.py]. (on or near line 217)
 {{{
-if self.body != None and bodyLen != len(body): ...
+if self.body != None and bodyLen != len(body): raise ValueError, ...
 }}}
 
 === How can I use Speex/8000 (narrowband) instead of Speex/16000 (wideband)? ===
