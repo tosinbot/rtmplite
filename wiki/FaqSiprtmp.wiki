@@ -174,3 +174,28 @@ connect = 1935
   # In `NetConnection` object's `connect()` method use the URL with "rtmps" scheme, e.g., "rtmps://your-server/sip".
 
 If you want use non-443 port, for example 8443, change `stunnel.conf` and use port number in your URL, e.g., "rtmps://your-server:8443/sip".
+
+=== How do I have multiple clients registered with same SIP address? ===
+
+Currently the Gateway class in siprtmp.py (in rtmplite project) disconnects other clients with same scope when a new client connects. This prevents multiple registrations for the same SIP address. For example, if first client connects with `rtmp://localhost/sip/alice@iptel.org` and then second client also connects to `rtmp://localhost/sip/alice@iptel.org` then the first client is disconnected. There are two approaches to solving this problem:
+
+1) do not disconnect other clients. This can be done by modifying `siprtmp.py::Gateway::onConnect` method. Just comment out one line as shown below.
+{{{
+   def onConnect(self, client, *args):
+       App.onConnect(self, client, args)
+-      for c in self.clients: multitask.add(c.connectionClosed())
+       client.context = Context(self, client)
+       ...
+}}}
+There may be potential problems in audio path, but not sure, since audio path is maintained using named streams within the scope, i.e., `/sip/alice@iptel.org`.
+
+2) let the clients connect with random scope, e.g., `rtmp://localhost/sip/alice@iptel.org/72812` where 72812 is some random number uniquely generated for each client. This avoids any audio path problem since each client has separate named streams now. Also, it avoids disconnection of other clients since each client will have potentially different random number. However, `siprtmp.py::Context::rtmp_register` method needs to be modified to extract the SIP address correctly as shown below.
+{{{
+   def rtmp_register(self, login=None, passwd='', display=None, rate='wideband'):
+       global agent
+       scheme, ignore, aor = self.client.path.partition('/')
++      aor = aor.split('/', 1)[0]   # ignore /random in /aor/random if present
+       if rate == 'narrowband': self._audio.rate = 8000
+       ...
+}}}
+I think 2 is a better approach but requires changes both in client (`VideoPhone`) and server (`rtmplite`), whereas 1 requires a change only in server.
