@@ -199,3 +199,9 @@ There may be potential problems in audio path, but not sure, since audio path is
        ...
 }}}
 I think 2 is a better approach but requires changes both in client (`VideoPhone`) and server (`rtmplite`), whereas 1 requires a change only in server.
+
+=== Why cannot play media published using wirecast to rtmplite? ===
+
+You can, but will need to use the Wirecast application instead of default App, and is accessible at `rtmp://your-server/wirecast` when using rtmp.py or siprtmp_gevent.py as your RTMP server. If you want it to be available at another URL just change the URL-app to application class mapping (look for apps property in both files).
+
+The problem is that Wirecast sends the AVC seq message only once in the beginning and then does not send it again. Hence if a Flash Player joins the stream after publishing has already started, then the Flash Player never receives the AVC seq message which is crucial in decoding the video. On the other hand Flash Player (11+) with H264Avc video codec mode sends the AVC seq message periodically, before every intra frame. To work around the limitation of Wirecast, I created a sub-class of App to store the published AVC seq messages, and send it to any player who join afterwards if no explicit AVC seq message was sent before intra frame. The sub-class also drops any non-infra frame after a player joins before an AVC seq and an intra frame are sent to the player.
