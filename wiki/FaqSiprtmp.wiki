@@ -175,6 +175,12 @@ connect = 1935
 
 If you want use non-443 port, for example 8443, change `stunnel.conf` and use port number in your URL, e.g., "rtmps://your-server:8443/sip".
 
+For Flash Player's RTMPS to work the following applies.
+  # The certificate must be signed by a popular CA (not self signed). I believe there are CAs that can sign your certificate for free, but haven't tried them. I haven't been able to get a self signed certificate to work with RTMPS from Flash Player.
+  # Pre-loading a self-signed certificate/CA in browser settings does not work for Flash Player's RTMPS.
+  # The common name (CN) of the certificate must be the host name that
+you are connecting to. For example, if your certificate is for CN of `server.com` and you are connecting to `rtmps://xyz.server.com` or `rtmps://192.1.2.3` (which is the IP address) then it will *not* work. Alternatively, you can get the CN in your certificate as wildcard `\*.server.com`
+
 === How do I have multiple clients registered with same SIP address? ===
 
 Currently the Gateway class in siprtmp.py (in rtmplite project) disconnects other clients with same scope when a new client connects. This prevents multiple registrations for the same SIP address. For example, if first client connects with `rtmp://localhost/sip/alice@iptel.org` and then second client also connects to `rtmp://localhost/sip/alice@iptel.org` then the first client is disconnected. There are two approaches to solving this problem:
