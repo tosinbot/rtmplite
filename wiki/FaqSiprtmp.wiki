@@ -61,6 +61,10 @@ You must dial a SIP address of the form "user@domain" or "user@ip-address". If y
 
 By default X-lite has only PCMU and PCMA codec enabled. You will need to go to audio options of X-lite and enable the Speex/16000 (wideband codec).
 
+=== How I do enable Speex to G.711 transcoding ===
+
+In siprtmp.py (and siprtmp_gevent.py), we have added support for transcoding between speex and pcmu/pcma voice codecs using the py-audio project. Just follow [http://code.google.com/p/py-audio py-audio] build instructions only for audiospeex module (ignoring the instructions for audiodev and audiotts) and place the generated audiospeex.so in your PYTHONPATH before starting siprtmp.py. Make sure you have the latest version of rtmplite and p2p-sip from SVN. More details of the codecs related enahancement are in [http://code.google.com/p/rtmplite/source/browse/trunk/siprtmp.py siprtmp.py] under top level file comments heading "Major Updates".
+
 === Does it work with Ekiga? ===
 
 Yes. Please make sure you use the latest p2p-sip sources from SVN, specially r39 or later, which works around the lack of RTP padding support in Ekiga.
